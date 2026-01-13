@@ -42,7 +42,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentIndex = 0;
     let isAutoplay = false;
     let autoplayInterval = null;
+
     let map = null;
+    let markersLayer = null;
 
     // Background images for different eras/locations
     const backgroundImages = {
@@ -481,6 +483,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         mapModal.classList.add('show');
         if (!map) {
             initMap();
+        } else {
+            updateMapMarkers();
         }
     });
 
@@ -496,9 +500,59 @@ document.addEventListener('DOMContentLoaded', async () => {
             maxZoom: 19
         }).addTo(map);
 
+        // Initialize Marker Cluster Group with custom options
+        if (markersLayer) {
+            map.removeLayer(markersLayer);
+        }
+
+        markersLayer = L.markerClusterGroup({
+            showCoverageOnHover: false,
+            zoomToBoundsOnClick: true,
+            spiderfyOnMaxZoom: true,
+            maxClusterRadius: 50,
+            iconCreateFunction: function (cluster) {
+                // Calculate total events in this cluster
+                const markers = cluster.getAllChildMarkers();
+                let totalEvents = 0;
+                markers.forEach(marker => {
+                    // We stored event count in the marker options, but easier to just sum 1 if we didn't.
+                    // However, we didn't attach data to marker object directly in a standard way.
+                    // Let's attach the count to the marker instance below when creating it.
+                    if (marker.eventCount) {
+                        totalEvents += marker.eventCount;
+                    } else {
+                        totalEvents += 1;
+                    }
+                });
+
+                return L.divIcon({
+                    html: `<div style="
+                        background: #0d1b2a;
+                        width: 40px; height: 40px; border-radius: 50%;
+                        border: 2px solid #d4af37;
+                        display: flex; align-items: center; justify-content: center;
+                        color: #d4af37; font-weight: bold; font-size: 14px;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+                    ">${totalEvents}</div>`,
+                    className: 'custom-cluster-icon',
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 20]
+                });
+            }
+        });
+        map.addLayer(markersLayer);
+
+        updateMapMarkers();
+    }
+
+    function updateMapMarkers() {
+        if (!markersLayer) return;
+        markersLayer.clearLayers();
+
         // Group events by location
         const groups = {};
-        allEvents.forEach(event => {
+        // Use filteredEvents to show only relevant events
+        filteredEvents.forEach(event => {
             if (event.lat && event.lng) {
                 const key = `${event.lat},${event.lng}`;
                 if (!groups[key]) {
@@ -526,14 +580,67 @@ document.addEventListener('DOMContentLoaded', async () => {
                 })
             });
 
-            marker.bindPopup(`
-                <div style="direction: rtl; font-family: 'Tajawal', sans-serif; color: #fff; background: #0d1b2a; padding: 15px; border-radius: 10px; min-width: 200px;">
-                    <div style="color: #d4af37; font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">${group.location}</div>
-                    <div style="color: rgba(255,255,255,0.7);">${group.events.length} حدث تاريخي</div>
-                </div>
-            `, { className: 'dark-popup' });
+            // Attach event count property for the clusterer to use
+            marker.eventCount = group.events.length;
 
-            marker.addTo(map);
+            // Create Popup Content with Click Handlers
+            const popupContent = document.createElement('div');
+            popupContent.style.direction = 'rtl';
+            popupContent.style.fontFamily = "'Tajawal', sans-serif";
+            popupContent.style.color = '#fff';
+            popupContent.style.background = '#0d1b2a';
+            popupContent.style.padding = '15px';
+            popupContent.style.borderRadius = '10px';
+            popupContent.style.minWidth = '250px';
+
+            const locationTitle = document.createElement('div');
+            locationTitle.style.color = '#d4af37';
+            locationTitle.style.fontSize = '1.2rem';
+            locationTitle.style.fontWeight = 'bold';
+            locationTitle.style.marginBottom = '10px';
+            locationTitle.textContent = group.location;
+            popupContent.appendChild(locationTitle);
+
+            const countText = document.createElement('div');
+            countText.style.color = 'rgba(255,255,255,0.7)';
+            countText.style.marginBottom = '10px';
+            countText.textContent = `${group.events.length} حدث تاريخي`;
+            popupContent.appendChild(countText);
+
+            const eventsList = document.createElement('div');
+            eventsList.style.maxHeight = '200px';
+            eventsList.style.overflowY = 'auto';
+
+            group.events.forEach(e => {
+                const item = document.createElement('div');
+                item.style.padding = '5px 0';
+                item.style.borderBottom = '1px solid rgba(255,255,255,0.1)';
+                item.style.fontSize = '0.9rem';
+                item.style.cursor = 'pointer';
+                item.style.transition = 'color 0.2s';
+                item.textContent = e.title;
+
+                item.addEventListener('mouseover', () => {
+                    item.style.color = '#d4af37';
+                });
+                item.addEventListener('mouseout', () => {
+                    item.style.color = '#fff';
+                });
+
+                item.addEventListener('click', () => {
+                    const idx = filteredEvents.findIndex(ev => ev.id === e.id);
+                    if (idx !== -1) {
+                        showSlide(idx);
+                        mapModal.classList.remove('show');
+                    }
+                });
+                eventsList.appendChild(item);
+            });
+
+            popupContent.appendChild(eventsList);
+
+            marker.bindPopup(popupContent, { className: 'dark-popup' });
+            markersLayer.addLayer(marker);
         });
     }
 

@@ -10,7 +10,11 @@
 - **تصفية متقدمة**: إمكانية تصفية الأحداث حسب العصر (مثل: عصر النبوة)، التصنيف الرئيسي، والتصنيف الفرعي.
 - **التمثيل البصري**:
   - **[جديد] رسومات تاريخية بأسلوب عتيق**: تتميز الأحداث الرئيسية (خاصة في عصر النبوة / المعالم الإسلامية) الآن برسومات فريدة مصممة بأسلوب الصور الفوتوغرافية العتيقة من القرن التاسع عشر (Vintage 19th-century style) لإضفاء جو تاريخي أصيل ومحترم، مع الالتزام بعدم تصوير الوجوه.
-- **خريطة تفاعلية**: استعراض أماكن الأحداث على خريطة جغرافية مدمجة.
+- **خريطة تفاعلية**: 
+  - استعراض أماكن الأحداث على خريطة جغرافية مدمجة.
+  - **[جديد] تجميع العلامات (Clustering)**: تجميع الأماكن المتقاربة في دائرة واحدة لتفادي الازدحام، مع إمكانية التكبير عند النقر.
+  - **[جديد] التنقل التفاعلي**: النقر على عنوان الحدث في الخريطة ينقلك مباشرة إلى تفاصيله في عرض الشرائح.
+
 - **تصميم متجاوب**: واجهة متوافقة تماماً مع الأجهزة المكتبية والمحمولة، مع دعم كامل للغة العربية (RTL).
 - **التنقل عبر لوحة المفاتيح**: استخدم مفاتيح الأسهم (اليمين/اليسار) للتنقل، وزر المسافة (Space) للإيقاف/التشغيل التلقائي.
 
@@ -18,7 +22,7 @@
 
 - **الواجهة الأمامية**: Vanilla JavaScript, HTML5, CSS3.
 - **البيانات**: ملفات JSON مهيكلة للأحداث والتصنيفات.
-- **الخريطة**: مكتبة Leaflet.js مع خرائط أساس داكنة (Dark Matter).
+- **الخريطة**: مكتبة Leaflet.js مع خرائط أساس داكنة (Dark Matter) وإضافة MarkerCluster.
 
 ## الإعداد والتشغيل
 
@@ -47,7 +51,10 @@ An interactive historical timeline application focusing on Islamic history, feat
 - **Advanced Filtering**: Filter events by Era (e.g., Prophetic Era), Category, and Sub-category.
 - **Visual Representation**: 
   - **[NEW] Authentic Vintage Illustrations**: Selected key events (specifically in the Prophetic Era / Islamic Landmarks) now feature unique, generated illustrations designed in a vintage 19th-century photograph style to provide an authentic historical atmosphere without depicting human faces.
-- **Geographic Map**: Visualize events on an interactive map.
+- **Geographic Map**: 
+  - Visualize events on an interactive map.
+  - **[NEW] Marker Clustering**: Groups nearby locations into clusters to prevent clutter, with zoom-to-expand functionality.
+  - **[NEW] Interactive Navigation**: Clicking an event title on the map navigates directly to its slide.
 - **Responsive Design**: Optimized for both desktop and mobile viewing with RTL support.
 - **Keyboard Navigation**: Use arrow keys to navigate and spacebar to toggle autoplay.
 
@@ -55,7 +62,7 @@ An interactive historical timeline application focusing on Islamic history, feat
 
 - **Frontend**: Vanilla JavaScript, HTML5, CSS3.
 - **Data**: JSON-based event data structure.
-- **Map Integration**: Leaflet.js with Dark Matter basemaps.
+- **Map Integration**: Leaflet.js with Dark Matter basemaps and MarkerCluster plugin.
 
 ## Setup
 
