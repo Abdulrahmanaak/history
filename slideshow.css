@@ -420,17 +420,38 @@ body {
         width: 100%;
         justify-content: center;
         gap: 8px;
+        flex-direction: column;
+        /* Stack items vertically on mobile */
+        display: none;
+        /* Hidden by default on mobile */
     }
 
-    .nav-btn,
+    .nav-controls.active {
+        display: flex;
+    }
+
+    /* Style for the toggle button itself, which should be visible */
+    .mobile-filter-toggle {
+        display: block !important;
+        width: 100%;
+        margin-bottom: 10px;
+        background: rgba(212, 175, 55, 0.2);
+    }
+
+    .nav-btn:not(.mobile-filter-toggle),
     .era-select {
+        width: 100%;
+        /* Full width for menu items */
         flex: 1 1 auto;
-        font-size: 0.8rem;
-        padding: 8px;
+        font-size: 0.9rem;
+        padding: 12px;
+        text-align: center;
     }
 
+    /* Override flex direction for the controls container when active */
     .slide-content {
-        padding-top: 220px;
+        padding-top: 100px;
+        /* Reduced padding since menu is hidden */
         justify-content: flex-start;
         height: auto;
         min-height: 100vh;
@@ -449,17 +470,47 @@ body {
     }
 
     .nav-arrow {
-        width: 40px;
-        height: 40px;
-        font-size: 1rem;
-        background: rgba(0, 0, 0, 0.6);
+        display: none !important;
+        /* Hide navigation arrows on mobile */
     }
+}
 
-    .nav-prev {
-        right: 10px;
-    }
+/* ---------------------------------
+   Toast Notification
+   --------------------------------- */
+.toast-container {
+    position: fixed;
+    bottom: 80px;
+    /* Adjusted to be above thumbnail nav */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    pointer-events: none;
+    width: 90%;
+    max-width: 400px;
+}
 
-    .nav-next {
-        left: 10px;
-    }
+.toast {
+    background: rgba(13, 27, 42, 0.95);
+    color: var(--accent);
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: 1px solid var(--accent);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    font-size: 1rem;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    text-align: center;
+    pointer-events: auto;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
 }

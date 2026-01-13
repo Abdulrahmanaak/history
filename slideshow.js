@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const mapBtn = document.getElementById('mapBtn');
     const mapModal = document.getElementById('mapModal');
     const closeMapBtn = document.getElementById('closeMapBtn');
+    const navControls = document.querySelector('.nav-controls');
 
     let allEvents = [];
     let filteredEvents = [];
@@ -114,6 +115,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Navigation
     prevBtn.addEventListener('click', () => showSlide(currentIndex - 1));
     nextBtn.addEventListener('click', () => showSlide(currentIndex + 1));
+
+    // Mobile Filter Toggle
+    const mobileFilterToggle = document.getElementById('mobileFilterToggle');
+    if (mobileFilterToggle) {
+        mobileFilterToggle.addEventListener('click', () => {
+            navControls.classList.toggle('active');
+            const isOpen = navControls.classList.contains('active');
+            mobileFilterToggle.innerHTML = isOpen ? 'تصفية ▲' : 'تصفية ▼';
+        });
+    }
 
     // Keyboard navigation
     document.addEventListener('keydown', (e) => {
@@ -215,6 +226,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         subCategorySelect.addEventListener('change', filterEvents);
+
+        // Conditional logic for sub-category dropdown
+        subCategorySelect.addEventListener('mousedown', (e) => {
+            if (categorySelect.value === 'all') {
+                e.preventDefault(); // Prevent dropdown from opening
+                showToast('الرجاء اختيار تصنيف أولاً');
+                subCategorySelect.blur(); // Remove focus
+            }
+        });
+    }
+
+    function showToast(message) {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = message;
+
+        container.appendChild(toast);
+
+        // Trigger reflow
+        toast.offsetHeight;
+
+        toast.classList.add('show');
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                container.removeChild(toast);
+            }, 300);
+        }, 3000);
     }
 
     function populateSubCategories(catId, data) {
@@ -363,8 +404,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const diff = touchStartX - touchEndX;
 
         if (Math.abs(diff) > 50) {
-            if (diff > 0) showSlide(currentIndex + 1);
-            else showSlide(currentIndex - 1);
+            // Inverted for RTL intuition:
+            // Swipe Left-to-Right (diff < 0) -> Next
+            // Swipe Right-to-Left (diff > 0) -> Previous
+            if (diff > 0) showSlide(currentIndex - 1);
+            else showSlide(currentIndex + 1);
         }
     });
 });
