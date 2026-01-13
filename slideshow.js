@@ -71,8 +71,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         slideContent.style.animation = 'fadeInUp 0.8s ease';
 
         // Update background
-        const bgUrl = backgroundImages[event.location] || backgroundImages['default'];
-        slideBackground.style.backgroundImage = `url(${bgUrl})`;
+        if (event.image) {
+            slideBackground.style.backgroundImage = `url(${event.image})`;
+        } else {
+            const bgUrl = backgroundImages[event.location] || backgroundImages['default'];
+            slideBackground.style.backgroundImage = `url(${bgUrl})`;
+        }
 
         // Update text content
         const eraName = event.era ? event.era.name : '';
