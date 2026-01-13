@@ -1,11 +1,50 @@
 # الموسوعة التاريخية (Historical Encyclopedia)
 
-An interactive historical timeline application focusing on Islamic history, featuring a dynamic slideshow interactface, filtering capabilities, and geographic visualization.
+[English Version Below](#historical-encyclopedia-english)
+
+تطبيق تفاعلي للجدول الزمني التاريخي يركز على التاريخ الإسلامي، ويتميز بعرض شرائح ديناميكي، وقدرات تصفية متقدمة، وتصور جغرافي.
+
+## المميزات
+
+- **عرض شرائح تفاعلي**: تنقل عبر الأحداث التاريخية بتجربة سلسة وجذابة.
+- **تصفية متقدمة**: إمكانية تصفية الأحداث حسب العصر (مثل: عصر النبوة)، التصنيف الرئيسي، والتصنيف الفرعي.
+- **التمثيل البصري**:
+  - **[جديد] رسومات تاريخية بأسلوب عتيق**: تتميز الأحداث الرئيسية (خاصة في عصر النبوة / المعالم الإسلامية) الآن برسومات فريدة مصممة بأسلوب الصور الفوتوغرافية العتيقة من القرن التاسع عشر (Vintage 19th-century style) لإضفاء جو تاريخي أصيل ومحترم، مع الالتزام بعدم تصوير الوجوه.
+- **خريطة تفاعلية**: استعراض أماكن الأحداث على خريطة جغرافية مدمجة.
+- **تصميم متجاوب**: واجهة متوافقة تماماً مع الأجهزة المكتبية والمحمولة، مع دعم كامل للغة العربية (RTL).
+- **التنقل عبر لوحة المفاتيح**: استخدم مفاتيح الأسهم (اليمين/اليسار) للتنقل، وزر المسافة (Space) للإيقاف/التشغيل التلقائي.
+
+## تفاصيل تقنية
+
+- **الواجهة الأمامية**: Vanilla JavaScript, HTML5, CSS3.
+- **البيانات**: ملفات JSON مهيكلة للأحداث والتصنيفات.
+- **الخريطة**: مكتبة Leaflet.js مع خرائط أساس داكنة (Dark Matter).
+
+## الإعداد والتشغيل
+
+1. **استنساخ المستودع**:
+   ```bash
+   git clone <repository-url>
+   ```
+2. **تشغيل خادم محلي**:
+   قم بتشغيل المجلد باستخدام أي خادم ويب محلي (مثل Live Server في VS Code أو `serve`).
+   ```bash
+   npx serve .
+   ```
+3. **فتح التطبيق**:
+   افتح الرابط `http://localhost:3000` (أو المنفذ المخصص) في متصفحك.
+
+---
+
+<a id="historical-encyclopedia-english"></a>
+# Historical Encyclopedia (English)
+
+An interactive historical timeline application focusing on Islamic history, featuring a dynamic slideshow interface, filtering capabilities, and geographic visualization.
 
 ## Features
 
 - **Interactive Slideshow**: Navigate through historical events with a seamless slideshow experience.
-- **Advanced Filtering**: Filter events by Era (e.g., عصر النبوة), Category, and Sub-category.
+- **Advanced Filtering**: Filter events by Era (e.g., Prophetic Era), Category, and Sub-category.
 - **Visual Representation**: 
   - **[NEW] Authentic Vintage Illustrations**: Selected key events (specifically in the Prophetic Era / Islamic Landmarks) now feature unique, generated illustrations designed in a vintage 19th-century photograph style to provide an authentic historical atmosphere without depicting human faces.
 - **Geographic Map**: Visualize events on an interactive map.
