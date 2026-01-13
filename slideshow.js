@@ -15,14 +15,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const autoplayBtn = document.getElementById('autoplayBtn');
-    const eraSelect = document.getElementById('eraSelect');
+    // Dropdown Elements References
+    const eraDropdown = document.getElementById('eraDropdown');
+    const eraTrigger = document.getElementById('eraTrigger');
+    const eraOptions = document.getElementById('eraOptions');
+    const eraValue = document.getElementById('eraValue');
+
+    const categoryDropdown = document.getElementById('categoryDropdown');
+    const categoryTrigger = document.getElementById('categoryTrigger');
+    const categoryOptions = document.getElementById('categoryOptions');
+    const categoryValue = document.getElementById('categoryValue');
     const mapBtn = document.getElementById('mapBtn');
     const mapModal = document.getElementById('mapModal');
     const closeMapBtn = document.getElementById('closeMapBtn');
     const navControls = document.querySelector('.nav-controls');
+    // Custom Dropdown Elements
+    const subCategoryDropdown = document.getElementById('subCategoryDropdown');
+    const subCategoryTrigger = document.getElementById('subCategoryTrigger');
+    const dropdownSearch = document.getElementById('dropdownSearch');
+    const dropdownOptions = document.getElementById('dropdownOptions');
+    const subCategoryValue = document.getElementById('subCategoryValue');
 
     let allEvents = [];
     let filteredEvents = [];
+    let currentSubCategories = [];
     let currentIndex = 0;
     let isAutoplay = false;
     let autoplayInterval = null;
@@ -170,8 +186,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             slideDescription.textContent = 'يرجى التأكد من تشغيل خادم محلي (Local Server).';
         });
 
-    // Setup Filters
-    const categorySelect = document.getElementById('categorySelect');
+    // Setup Filters (removed reference to categorySelect)
+
     // Drag to scroll for thumbnail nav
     let isDown = false;
     let startX;
@@ -207,39 +223,124 @@ document.addEventListener('DOMContentLoaded', async () => {
     thumbnailNav.style.cursor = 'grab';
 
     function setupFilters(categoriesData) {
-        // Show dropdowns
-        categorySelect.style.display = 'inline-block';
-        subCategorySelect.style.display = 'inline-block';
+        // Dropdown Utility
+        function setupCustomDropdownNodes(trigger, dropdown, optionsContainer, valueInput, onSelect) {
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Close others
+                document.querySelectorAll('.custom-dropdown').forEach(d => {
+                    if (d !== dropdown) d.classList.remove('active');
+                });
+                dropdown.classList.toggle('active');
+            });
+        }
+
+        function addOptionToDropdown(container, value, text, valueInput, trigger, onSelect, dropdown) {
+            const option = document.createElement('div');
+            option.className = 'dropdown-option';
+            option.textContent = text;
+            option.dataset.value = value;
+
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                valueInput.value = value;
+                trigger.querySelector('span').textContent = text;
+                dropdown.classList.remove('active');
+                if (onSelect) onSelect(value);
+            });
+            container.appendChild(option);
+        }
+
+        // --- Setup Era Dropdown ---
+        setupCustomDropdownNodes(eraTrigger, eraDropdown, eraOptions, eraValue);
+        // Populate Eras
+        const eras = [
+            'عصر النبوة', 'عصر الخلافة الراشدة', 'العصر الأموي',
+            'العصر العباسي', 'عصر المماليك', 'العصر العثماني', 'التاريخ المعاصر'
+        ];
+
+        eraOptions.innerHTML = '';
+        addOptionToDropdown(eraOptions, 'all', 'جميع العصور', eraValue, eraTrigger, filterEvents, eraDropdown);
+        eras.forEach(era => {
+            addOptionToDropdown(eraOptions, era, era, eraValue, eraTrigger, filterEvents, eraDropdown);
+        });
+
+        // --- Setup Category Dropdown ---
+        categoryDropdown.style.display = 'inline-block';
+        setupCustomDropdownNodes(categoryTrigger, categoryDropdown, categoryOptions, categoryValue);
 
         // Populate Categories
+        categoryOptions.innerHTML = '';
+        addOptionToDropdown(categoryOptions, 'all', 'جميع التصنيفات', categoryValue, categoryTrigger, () => {
+            // On Category Change
+            populateSubCategories('all', categoriesData);
+            filterEvents();
+        }, categoryDropdown);
+
         categoriesData.categories.forEach(cat => {
-            const option = document.createElement('option');
-            option.value = cat.id;
-            option.textContent = cat.name;
-            categorySelect.appendChild(option);
+            addOptionToDropdown(categoryOptions, cat.id, cat.name, categoryValue, categoryTrigger, (val) => {
+                populateSubCategories(val, categoriesData);
+                filterEvents();
+            }, categoryDropdown);
+        });
+
+        subCategoryDropdown.style.display = 'none';
+
+        // --- Update Setup for Sub-category to close others ---
+        subCategoryTrigger.addEventListener('click', (e) => {
+            // Close others
+            document.querySelectorAll('.custom-dropdown').forEach(d => {
+                if (d !== subCategoryDropdown) d.classList.remove('active');
+            });
         });
 
         // Event Listeners
-        eraSelect.addEventListener('change', filterEvents);
 
-        categorySelect.addEventListener('change', () => {
-            // Update Sub-categories based on selection
-            const selectedCatId = categorySelect.value;
-            populateSubCategories(selectedCatId, categoriesData);
-            filterEvents();
-        });
 
-        subCategorySelect.addEventListener('change', filterEvents);
+        // Custom Dropdown Logic
 
-        // Conditional logic for sub-category dropdown
-        subCategorySelect.addEventListener('mousedown', (e) => {
-            if (categorySelect.value === 'all') {
-                e.preventDefault(); // Prevent dropdown from opening
+        // Toggle Dropdown
+        subCategoryTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (categoryValue.value === 'all') {
                 showToast('الرجاء اختيار تصنيف أولاً');
-                subCategorySelect.blur(); // Remove focus
+                return;
+            }
+            subCategoryDropdown.classList.toggle('active');
+            if (subCategoryDropdown.classList.contains('active')) {
+                dropdownSearch.focus();
             }
         });
+
+        // Search Filter
+        dropdownSearch.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const options = dropdownOptions.querySelectorAll('.dropdown-option');
+            options.forEach(option => {
+                const text = option.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    option.style.display = 'block';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+        });
+
+        // Close when clicking outside - Global handler already exists potentially? 
+        // Let's create a single global handler for all dropdowns if not present,
+        // or just rely on individual stopPropagation.
+        // The previous implementation added a listener for `subCategoryDropdown`. 
+        // We should replace it with a generic one.
     }
+
+    // Global click listener to close all dropdowns
+    document.addEventListener('click', (e) => {
+        document.querySelectorAll('.custom-dropdown').forEach(dropdown => {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+    });
 
     function showToast(message) {
         const container = document.getElementById('toastContainer');
@@ -263,26 +364,65 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function populateSubCategories(catId, data) {
-        // Reset sub-category select
-        subCategorySelect.innerHTML = '<option value="all">جميع التفرعات</option>';
+        // Reset
+        dropdownSearch.value = '';
+        subCategoryValue.value = 'all';
+        subCategoryTrigger.querySelector('span').textContent = 'جميع التفرعات';
+        dropdownOptions.innerHTML = ''; // Clear options
 
-        if (catId === 'all') return;
+        if (catId === 'all') {
+            subCategoryDropdown.style.display = 'none';
+            currentSubCategories = [];
+            return;
+        }
 
         const category = data.categories.find(c => c.id == catId);
         if (category && category.subCategories) {
-            category.subCategories.forEach(sub => {
-                const option = document.createElement('option');
-                option.value = sub.id;
-                option.textContent = sub.name;
-                subCategorySelect.appendChild(option);
-            });
+            currentSubCategories = category.subCategories;
+            subCategoryDropdown.style.display = 'inline-block';
+            renderSubCategoriesOptions(currentSubCategories);
+        } else {
+            currentSubCategories = [];
+            subCategoryDropdown.style.display = 'none';
         }
     }
 
+    function renderSubCategoriesOptions(subs) {
+        dropdownOptions.innerHTML = '';
+
+        // Add "All" option
+        addDropdownOption('all', 'جميع التفرعات');
+
+        subs.forEach(sub => {
+            addDropdownOption(sub.id, sub.name);
+        });
+    }
+
+    function addDropdownOption(id, name) {
+        const option = document.createElement('div');
+        option.className = 'dropdown-option';
+        option.textContent = name;
+        option.dataset.value = id;
+
+        option.addEventListener('click', () => {
+            // Update selected value
+            subCategoryValue.value = id;
+            subCategoryTrigger.querySelector('span').textContent = name;
+
+            // Close dropdown
+            subCategoryDropdown.classList.remove('active');
+
+            // Trigger filter
+            filterEvents();
+        });
+
+        dropdownOptions.appendChild(option);
+    }
+
     function filterEvents() {
-        const selectedEra = eraSelect.value;
-        const selectedCat = categorySelect.value;
-        const selectedSubCat = subCategorySelect.value;
+        const selectedEra = eraValue.value;
+        const selectedCat = categoryValue.value;
+        const selectedSubCat = subCategoryValue.value;
 
         filteredEvents = allEvents.filter(e => {
             const eraMatch = selectedEra === 'all' || (e.era && e.era.name === selectedEra);

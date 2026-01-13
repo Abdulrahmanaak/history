@@ -22,23 +22,38 @@
         <button class="nav-btn mobile-filter-toggle" id="mobileFilterToggle" style="display: none;">تصفية ▼</button>
         <div class="nav-controls">
             <button class="nav-btn" id="autoplayBtn">▶ تشغيل تلقائي</button>
-            <select class="era-select" id="eraSelect">
-                <option value="all">جميع العصور</option>
-                <!-- Eras will be populated dynamically or fallback to hardcoded -->
-                <option value="عصر النبوة">عصر النبوة</option>
-                <option value="عصر الخلافة الراشدة">عصر الخلافة الراشدة</option>
-                <option value="العصر الأموي">العصر الأموي</option>
-                <option value="العصر العباسي">العصر العباسي</option>
-                <option value="عصر المماليك">عصر المماليك</option>
-                <option value="العصر العثماني">العصر العثماني</option>
-                <option value="التاريخ المعاصر">التاريخ المعاصر</option>
-            </select>
-            <select class="era-select" id="categorySelect" style="display:none;">
-                <option value="all">جميع التصنيفات</option>
-            </select>
-            <select class="era-select" id="subCategorySelect" style="display:none;">
-                <option value="all">جميع التفرعات</option>
-            </select>
+            <!-- Era Custom Dropdown -->
+            <div class="custom-dropdown" id="eraDropdown">
+                <div class="dropdown-trigger" id="eraTrigger"><span>جميع العصور</span></div>
+                <div class="dropdown-content">
+                    <div class="dropdown-options" id="eraOptions">
+                        <!-- Options injected via JS -->
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="eraValue" value="all">
+            <!-- Category Custom Dropdown -->
+            <div class="custom-dropdown" id="categoryDropdown" style="display:none;">
+                <div class="dropdown-trigger" id="categoryTrigger"><span>جميع التصنيفات</span></div>
+                <div class="dropdown-content">
+                    <div class="dropdown-options" id="categoryOptions">
+                        <!-- Options injected via JS -->
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="categoryValue" value="all">
+            <!-- Custom Searchable Dropdown -->
+            <div class="custom-dropdown" id="subCategoryDropdown" style="display:none;">
+                <div class="dropdown-trigger" id="subCategoryTrigger"><span>جميع التفرعات</span></div>
+                <div class="dropdown-content">
+                    <input type="text" class="dropdown-search" id="dropdownSearch" placeholder="بحث...">
+                    <div class="dropdown-options" id="dropdownOptions">
+                        <!-- Options injected here -->
+                    </div>
+                </div>
+            </div>
+            <!-- Hidden select to maintain compatibility if needed, or we can just use the JS variable -->
+            <input type="hidden" id="subCategoryValue" value="all">
             <button class="nav-btn" id="mapBtn">🗺️ الخريطة</button>
         </div>
     </nav>
