@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الموسوعة التاريخية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="slideshow.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div style="display: flex; flex-direction: column;">
+            <div class="nav-brand">الموسوعة التاريخية</div>
+            <div style="font-size: 0.75rem; opacity: 0.8; font-weight: normal;">المصدر: الموسوعة التاريخية للدرر السنية
+            </div>
+        </div>
+        <div class="nav-controls">
+            <button class="nav-btn" id="autoplayBtn">▶ تشغيل تلقائي</button>
+            <select class="era-select" id="eraSelect">
+                <option value="all">جميع العصور</option>
+                <!-- Eras will be populated dynamically or fallback to hardcoded -->
+                <option value="عصر النبوة">عصر النبوة</option>
+                <option value="عصر الخلافة الراشدة">عصر الخلافة الراشدة</option>
+                <option value="العصر الأموي">العصر الأموي</option>
+                <option value="العصر العباسي">العصر العباسي</option>
+                <option value="عصر المماليك">عصر المماليك</option>
+                <option value="العصر العثماني">العصر العثماني</option>
+                <option value="التاريخ المعاصر">التاريخ المعاصر</option>
+            </select>
+            <select class="era-select" id="categorySelect" style="display:none;">
+                <option value="all">جميع التصنيفات</option>
+            </select>
+            <select class="era-select" id="subCategorySelect" style="display:none;">
+                <option value="all">جميع التفرعات</option>
+            </select>
+            <button class="nav-btn" id="mapBtn">🗺️ الخريطة</button>
+        </div>
+    </nav>
+
+    <!-- Slideshow Container -->
+    <main class="slideshow-container">
+        <!-- Slide -->
+        <div class="slide" id="currentSlide">
+            <div class="slide-background" id="slideBackground"></div>
+            <div class="slide-overlay"></div>
+
+            <div class="slide-content">
+                <div class="slide-era" id="slideEra">التاريخ المعاصر</div>
+                <div class="slide-years">
+                    <span class="hijri" id="slideHijri">1443 هـ</span>
+                    <span class="separator">|</span>
+                    <span class="gregorian" id="slideGregorian">2022 م</span>
+                </div>
+                <h1 class="slide-title" id="slideTitle">عنوان الحدث</h1>
+                <p class="slide-description" id="slideDescription">وصف الحدث التاريخي...</p>
+                <div class="slide-location" id="slideLocation">📍 صنعاء</div>
+            </div>
+
+            <!-- Navigation Arrows -->
+            <button class="nav-arrow nav-prev" id="prevBtn">❮</button>
+            <button class="nav-arrow nav-next" id="nextBtn">❯</button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Slide Counter -->
+        <div class="slide-counter">
+            <span id="currentIndex">1</span> / <span id="totalSlides">24</span>
+        </div>
+
+        <!-- Thumbnail Navigation -->
+        <div class="thumbnail-nav" id="thumbnailNav">
+            <!-- Thumbnails will be generated here -->
+        </div>
+    </main>
+
+    <!-- Map Modal -->
+    <div class="map-modal" id="mapModal">
+        <div class="map-modal-content">
+            <button class="close-modal" id="closeMapBtn">✕</button>
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="slideshow.js"></script>
+</body>
+
+</html>
